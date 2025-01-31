@@ -10,9 +10,12 @@ class ImageController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Image::all()->map(function ($image) {
+
+        $user_id = $request->user()->id;
+
+        return Image::where('user_id', $user_id)->get()->map(function ($image) {
             return [
                 'id' => $image->id,
                 'url' => url("storage/$image->path"),
@@ -44,6 +47,7 @@ class ImageController extends Controller
         $image = Image::create([
             'path' => $path,
             'label' => $request->label,
+            'user_id' => $request->user()->id,
         ]);
 
         return response($image, 201);
